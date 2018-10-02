@@ -2,14 +2,14 @@
     <!-- Root element of PhotoSwipe. Must have class pswp. -->
     <div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
 
-        <!-- Background of PhotoSwipe. 
+        <!-- Background of PhotoSwipe.
             It's a separate element as animating opacity is faster than rgba(). -->
         <div class="pswp__bg"></div>
 
         <!-- Slides wrapper with overflow:hidden. -->
         <div class="pswp__scroll-wrap">
 
-            <!-- Container that holds slides. 
+            <!-- Container that holds slides.
                 PhotoSwipe keeps only 3 of them in the DOM to save memory.
                 Don't modify these 3 pswp__item elements, data is added later on. -->
             <div class="pswp__container">
@@ -47,7 +47,7 @@
                 </div>
 
                 <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
-                    <div class="pswp__share-tooltip"></div> 
+                    <div class="pswp__share-tooltip"></div>
                 </div>
 
                 <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
@@ -68,45 +68,45 @@
 </template>
 
 <script>
-    import 'photoswipe/dist/photoswipe.css'
-    import 'photoswipe/dist/default-skin/default-skin.css'
+import 'photoswipe/dist/photoswipe.css'
+import 'photoswipe/dist/default-skin/default-skin.css'
 
-    import PhotoSwipe from 'photoswipe/dist/photoswipe'
-    import PhotoSwipeDefaultUI from 'photoswipe/dist/photoswipe-ui-default'
+import PhotoSwipe from 'photoswipe/dist/photoswipe'
+import PhotoSwipeDefaultUI from 'photoswipe/dist/photoswipe-ui-default'
 
-    export default {
-        methods: {
-            open (index, items, options = {
-                // captionEl: false,
-                fullscreenEl: true,
-                history: false,
-                shareEl: false,
-                tapToClose: true
-            }) {
-                const opts = Object.assign({
-                    index: index,
-                    getThumbBoundsFn (index) {
-                        const thumbnail = document.querySelectorAll('.preview-img-item')[index]
-                        const pageYScroll = window.pageYOffset
-                                || document.documentElement.scrollTop
-                                || document.body.scrollTop
-                                || 0
-                        const rect = thumbnail.getBoundingClientRect()
-                        return {
-                            x: rect.left,
-                            y: rect.top + pageYScroll,
-                            w: rect.width
-                        }
-                    }
-                }, options)
-
-                this.photoswipe = new PhotoSwipe(this.$el, PhotoSwipeDefaultUI, items, opts)
-                this.photoswipe.init()
-            },
-
-            close () {
-                this.photoswipe.close()
-            }
+export default {
+  methods: {
+    open (index, items, ref, options = {
+      // captionEl: false,
+      fullscreenEl: true,
+      history: false,
+      shareEl: false,
+      tapToClose: true
+    }) {
+      const opts = Object.assign({
+        index: index,
+        getThumbBoundsFn (index) {
+          let thumbnail = ref
+          // const thumbnail = document.querySelectorAll('.preview-img-item')[index]
+          const pageYScroll = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0
+          const rect = thumbnail.getBoundingClientRect()
+          return {
+            x: rect.left,
+            y: rect.top + pageYScroll,
+            w: rect.width
+          }
         }
+      }, options)
+      this.photoswipe = new PhotoSwipe(this.$el, PhotoSwipeDefaultUI, items, opts)
+      this.photoswipe.init()
+
+      this.photoswipe.listen('afterChange', function () {
+        console.log('vue-photoswipe:beforeChange')
+      })
+    },
+    close () {
+      this.photoswipe.close()
     }
+  }
+}
 </script>
